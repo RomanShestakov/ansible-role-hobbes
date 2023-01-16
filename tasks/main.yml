@@ -14,6 +14,22 @@
   when: not hobbes_exists.rc == 0
   register: hobbes_downloaded
 
+# due to some bug in bison parser there is warning
+# error: ‘void free(void*)’ called on unallocated object ‘yyssa’ [-Werror=free-nonheap-object]
+# which gets truned into error
+# this is false positive so disable
+# see discussion at: https://lists.gnu.org/archive/html/help-bison/2021-01/msg00021.html
+- name: HOBBES | Patch compile warning
+  become: true
+  replace:
+      path="{{hobbes_tmp }}/{{ item }}"
+      regexp='-Wall'
+      replace='-Wall -Wno-free-nonheap-object '
+      backup=no
+  with_items:
+  - CMakeLists.txt
+  when: hobbes_patch_warning == True
+
 - name: HOBBES | Make build folder
   become: true
   file: path="{{ hobbes_build_dir }}" state=directory

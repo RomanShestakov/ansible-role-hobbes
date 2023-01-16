@@ -1,6 +1,7 @@
 # file: ansible-role-hobbes/defaults/main.yml
 
 hobbes_repo_url: https://github.com/morganstanley/hobbes.git
-hobbes_tmp: "/scratch"
+hobbes_tmp: "/scratch/hobbes"
 hobbes_build_dir: /scratch/hobbes-build
 hobbes_install_dir: /usr/local
+hobbes_patch_warning: True
