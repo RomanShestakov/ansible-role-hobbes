@@ -1,0 +1,16 @@
+# file: ansible-role-hobbes/meta/main.yml
+
+galaxy_info:
+  author: ros
+  company: ANXS
+  description: Install ms hobbes
+  min_ansible_version: 0.1
+  license: apache-2.0
+  platforms:
+  - name: Centos
+    versions:
+    - all
+  categories:
+  - system
+
+dependencies:

@@ -1,0 +1,53 @@
+# file: ansible-role-hobbes/tasks/main.yml
+
+- name: HOBBES | check if already installed
+  shell: command -v hi >/dev/null 2>&1
+  register: hobbes_exists
+  ignore_errors: yes
+
+- debug: msg="{{ hobbes_exists.rc }}" # it returns rc 1
+- debug: var=hobbes_exists
+
+- name: HOBBES | get from git repository
+  git: repo="{{ hobbes_repo_url }}"
+       dest="{{ hobbes_tmp }}"
+  when: not hobbes_exists.rc == 0
+  register: hobbes_downloaded
+
+- name: HOBBES | Make build folder
+  become: true
+  file: path="{{ hobbes_build_dir }}" state=directory
+  when: hobbes_downloaded.changed
+
+- name: HOBBES | cmake
+  become: true
+  command: chdir="{{ hobbes_build_dir }}" \
+           cmake cmake -G "Unix Makefiles" "{{ hobbes_tmp }}" \
+           -DCMAKE_INSTALL_PREFIX="{{ hobbes_install_dir }}" \
+           -DPYTHON_EXECUTOR="/usr/bin/python3" \
+           "{{ hobbes_tmp }}"
+  when: hobbes_downloaded.changed
+
+- name: HOBBES | make
+  become: true
+  command: chdir="{{ hobbes_build_dir }}" make
+  when: hobbes_downloaded.changed
+
+- name: HOBBES | install
+  become: true
+  command: chdir="{{ hobbes_build_dir }}" make install
+  when: hobbes_downloaded.changed
+
+- name: HOBBES | cleanup build dir
+  become: true
+  file:
+    path: "{{ hobbes_build_dir }}"
+    state: absent
+  when: hobbes_downloaded.changed
+
+- name: HOBBES | cleanup tmp dir
+  become: true
+  file:
+    path: "{{ hobbes_tmp }}"
+    state: absent
+  when: hobbes_downloaded.changed
