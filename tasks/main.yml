@@ -40,7 +40,7 @@
   command: chdir="{{ hobbes_build_dir }}" \
            cmake cmake -G "Unix Makefiles" "{{ hobbes_tmp }}" \
            -DCMAKE_INSTALL_PREFIX="{{ hobbes_install_dir }}" \
-           -DPYTHON_EXECUTOR="/usr/bin/python3" \
+           -DPYTHON_EXECUTABLE="/usr/bin/python3" \
            "{{ hobbes_tmp }}"
   when: hobbes_downloaded.changed
 
