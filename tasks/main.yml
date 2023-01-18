@@ -11,6 +11,7 @@
 - name: HOBBES | get from git repository
   git: repo="{{ hobbes_repo_url }}"
        dest="{{ hobbes_tmp }}"
+       force=true
   when: not hobbes_exists.rc == 0
   register: hobbes_downloaded
 
